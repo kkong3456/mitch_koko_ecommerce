@@ -78,6 +78,12 @@ class ShopPage extends StatelessWidget {
               );
             },
           ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 25, left: 25, right: 25),
+          child: Divider(
+            color: Colors.white,
+          ),
         )
       ],
     );
