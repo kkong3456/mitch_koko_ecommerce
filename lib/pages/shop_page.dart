@@ -1,91 +1,111 @@
 import 'package:flutter/material.dart';
 import 'package:mitch_koko_ecommerce/components/shoe_tile.dart';
+import 'package:mitch_koko_ecommerce/models/cart.dart';
 import 'package:mitch_koko_ecommerce/models/shoe.dart';
+import 'package:provider/provider.dart';
 
-class ShopPage extends StatelessWidget {
+class ShopPage extends StatefulWidget {
   const ShopPage({super.key});
 
   @override
+  State<ShopPage> createState() => _ShopPageState();
+}
+
+class _ShopPageState extends State<ShopPage> {
+  //add shoe to cart
+  void addShoeToCart(Shoe shoe) {
+    Provider.of<Cart>(context, listen: false).addItemToCart(shoe);
+
+    //alert the user,shoe successfully added to cart
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Shoe successfully added to cart'),
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        //search bar
-        Container(
-          padding: const EdgeInsets.all(12),
-          margin: const EdgeInsets.symmetric(horizontal: 25),
-          decoration: BoxDecoration(
-            color: Colors.grey[200],
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Search',
-                style: TextStyle(color: Colors.grey),
-              ),
-              Icon(Icons.search, color: Colors.grey),
-            ],
-          ),
-        ),
-        //message
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 25.0),
-          child: Text(
-            'everyone files.. some fly longer than others',
-            style: TextStyle(
-              color: Colors.grey[600],
+    return Consumer<Cart>(
+      builder: (context, value, child) => Column(
+        children: [
+          //search bar
+          Container(
+            padding: const EdgeInsets.all(12),
+            margin: const EdgeInsets.symmetric(horizontal: 25),
+            decoration: BoxDecoration(
+              color: Colors.grey[200],
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Search',
+                  style: TextStyle(color: Colors.grey),
+                ),
+                Icon(Icons.search, color: Colors.grey),
+              ],
             ),
           ),
-        ),
-        //hot picks
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 25.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                'Hot Picks ',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24,
-                ),
+          //message
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 25.0),
+            child: Text(
+              'everyone files.. some fly longer than others',
+              style: TextStyle(
+                color: Colors.grey[600],
               ),
-              Text(
-                'See all',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue,
+            ),
+          ),
+          //hot picks
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 25.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  'Hot Picks ',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24,
+                  ),
                 ),
-              )
-            ],
+                Text(
+                  'See all',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue,
+                  ),
+                )
+              ],
+            ),
           ),
-        ),
-        Expanded(
-          child: ListView.builder(
-            itemCount: 4,
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (context, index) {
-              Shoe shoe = Shoe(
-                name: 'Air Jordan',
-                price: '240',
-                description: 'cool shoe',
-                imagePath: 'lib/images/nike1.png',
-              );
-              return ShoeTile(
-                shoe: shoe,
-              );
-            },
+          Expanded(
+            child: ListView.builder(
+              itemCount: 4,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index) {
+                //get the shoe from the list
+                Shoe shoe = value.getShoeList()[index];
+                //return the shoe
+                return ShoeTile(
+                  shoe: shoe,
+                  // onTap: () => value.addItemToCart(shoe),
+                  onTap: () => addShoeToCart(shoe),
+                );
+              },
+            ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 25, left: 25, right: 25),
-          child: Divider(
-            color: Colors.white,
-          ),
-        )
-      ],
+          Padding(
+            padding: const EdgeInsets.only(top: 25, left: 25, right: 25),
+            child: Divider(
+              color: Colors.white,
+            ),
+          )
+        ],
+      ),
     );
   }
 }
